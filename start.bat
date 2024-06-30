@@ -1,0 +1,1 @@
+cd swarm_server && go run main.go

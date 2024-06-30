@@ -1,9 +1,9 @@
 package main
 
 import (
-	"swarm_server/space"
-	"swarm_server/node"
 	"fmt"
+	"swarm_server/node"
+	"swarm_server/space"
 	// "os"
 )
 
@@ -12,7 +12,7 @@ func main() {
 	var sp space.Plane
 	sp_o := sp.Origin // (0, 0, 0) by default
 	sp.End.X, sp.End.Y, sp.End.Z = 1, 1, 100
-	
+
 	var n node.Node
 
 	// fmt.Printf("Node in main, before: %d, %d, %d\n", n.P.X, n.P.Y, n.P.Z)
@@ -24,12 +24,10 @@ func main() {
 	occupiedSpace := []space.Point{sp_o}
 	var done bool
 
-	for {
-		fmt.Printf("Current point is (%d, %d, %d)\n", n.P.X, n.P.Y, n.P.Z)
+	fmt.Printf("Current point is (%d, %d, %d)\n", n.P.X, n.P.Y, n.P.Z)
 
-		if occupiedSpace, done = n.MoveTo(occupiedSpace, sp.End); done {
-			fmt.Printf("Node in main, now at: %d, %d, %d\n", n.P.X, n.P.Y, n.P.Z)
-			return
-		}
+	if occupiedSpace, done = n.MoveTo(occupiedSpace, sp.End); done {
+		fmt.Printf("Node in main, now at: %d, %d, %d\n", n.P.X, n.P.Y, n.P.Z)
+		return
 	}
 }
