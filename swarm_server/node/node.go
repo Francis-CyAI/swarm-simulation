@@ -59,8 +59,8 @@ func NextAvailableSpacePoint(space []space.Point, p space.Point, limit space.Poi
 
 	fmt.Printf("node point in NextAvailableSpacePoint func, pre-op: %d %d %d\n", p.X, p.Y, p.Z)
 
-	if p.X <= p.Y && p.X < limit.X || p.X <= p.Z && p.X < limit.X {
-		p.X += 1
+	if p.X <= p.Y && p.X < limit.X || p.X <= p.Z && p.X < limit.X { // TODO: Fix this logic
+		p.X += 1 
 	} else if p.Y <= p.X && p.Y < limit.Y || p.Y <= p.Z  && p.Y < limit.Y {
 		p.Y += 1
 	} else if p.Z <= p.X && p.Z < limit.Z || p.Z <= p.Y && p.Z < limit.Z {
