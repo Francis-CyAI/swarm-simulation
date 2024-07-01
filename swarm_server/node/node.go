@@ -72,18 +72,19 @@ func NextAvailableSpacePoint(space []space.Point, p space.Point, limit space.Poi
 	*/
 
 	if p.X < limit.X {
-		if p.X <= p.Y && p.X <= p.Z {
+		// if p.X <= p.Y && p.X <= p.Z {
 			p.X += 1
-		}
+		// }
 	} else if p.Y < limit.Y {
-		if p.Y <= p.X && p.Y <= p.Z {
+		// if p.Y <= p.X && p.Y <= p.Z {
 			p.Y += 1
-		}
+		// }
 	} else if p.Z < limit.Z {
-		if p.Z <= p.X && p.Z <= p.Y {
+		// if p.Z <= p.X && p.Z <= p.Y {
 			p.Z += 1
-		}
+		// }
 	} else {
+		fmt.Printf("\n\tLimit reachead!")
 		return p, done
 	} // limit reached
 
@@ -91,8 +92,7 @@ func NextAvailableSpacePoint(space []space.Point, p space.Point, limit space.Poi
 
 	pointNotFree, _ := p.IndexIn(space)
 	fmt.Printf("New point not free: %t\n", pointNotFree)
-	if !pointNotFree { // ??
-
+	if !pointNotFree { // ?? Remove ! because its only meant to see the algorithm in recursive action
 		// Point is not free
 		NextAvailableSpacePoint(space, p, limit)
 	}
