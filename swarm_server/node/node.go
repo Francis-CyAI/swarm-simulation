@@ -1,7 +1,7 @@
 package node
 
 import (
-	"fmt" // TODO: remove
+	// TODO: remove
 	"slices"
 	"swarm_server/space"
 	"sync"
@@ -25,28 +25,72 @@ func (node Node) IndexIn(space []space.Point) (bool, int) {
 	return there, i
 }
 
+/*
+func indexIn(space []space.Point, p space.Point) (bool, int) {
+	there := false
+	i := -1
+	for j := 0; j < len(space); j++ {
+		if currSPoint := space[j]; p.X == currSPoint.X && p.Y == currSPoint.Y && p.Z == currSPoint.Z {
+			there = true
+			i = j
+		}
+	}
+
+	return there, i
+}
+*/
+
+func nextPoint(currPoint space.Point, limit space.Point) (space.Point, bool) {
+	// return next point, and done status
+
+	var done bool
+	
+	if limit.X >= limit.Y && limit.X >= limit.Z {
+		// X is the main dimension
+		currPoint.X++
+		done = currPoint.X >= limit.X
+	} else if limit.Y >= limit.X && limit.Y >= limit.Z {
+		// Y is the main dimention
+		currPoint.Y++
+		done = currPoint.Y >= limit.Y
+	} else if limit.Z >= limit.X && limit.Z >= limit.Y {
+		// Z is the main dimention
+		currPoint.Z++
+		done = currPoint.Z >= limit.Z
+	}
+
+
+	return currPoint, done
+}
+
 func (node Node) MoveTo(space []space.Point, limit space.Point) ([]space.Point, bool) { // TODO: fix logic
 	/**
 	Node must first check if point exists in
 	the occupied points Slice. If it does, it
-	chooses a different point.
+	chooses a different point within the nearest space.
 	*/
 
 	// free previously occupied point
-	there, pIndex := node.IndexIn(space)
-	if there {
-		fmt.Printf("Node is there in space at index %d, now removing it\n", pIndex)
+	
+	if there, pIndex := node.IndexIn(space); there {
+		// fmt.Printf("Node is there in space at index %d, now removing it\n", pIndex)
 		space = slices.Delete(space, pIndex, pIndex+1)
-		there, _ := node.IndexIn(space)
-		fmt.Printf("There: %t\n", there)
+		// there, _ := node.IndexIn(space)
+		// fmt.Printf("There: %t\n", there)
 	}
 
 	var mu sync.Mutex
 
 	var done bool
 	mu.Lock()
-	node.P, done = NextAvailableSpacePoint(space, node.P, limit)
+	node.P, done = nextPoint(node.P, limit)
 	mu.Unlock()
+
+	there, _ := node.IndexIn(space)
+
+	if there /* collision has occured */ {
+		node.P = NextAvailableSpacePoint(space, node.P)
+	}
 
 	// fmt.Printf("pIndex = %d, pIndex + 1 = %d", pIndex, pIndex+1)
 	// fmt.Printf("\tspace length = %d\n", len(space))
@@ -54,48 +98,26 @@ func (node Node) MoveTo(space []space.Point, limit space.Point) ([]space.Point, 
 	return space, done
 }
 
-func NextAvailableSpacePoint(space []space.Point, p space.Point, limit space.Point) (space.Point, bool) {
-	done := true
-
-	fmt.Printf("node point in NextAvailableSpacePoint func, pre-op: %d %d %d\n", p.X, p.Y, p.Z)
-
+func NextAvailableSpacePoint(space []space.Point, p space.Point) space.Point {
 	/*
-	if p.X <= p.Y && p.X < limit.X || p.X <= p.Z && p.X < limit.X { // TODO: Fix this logic
-		p.X += 1 
-	} else if p.Y <= p.X && p.Y < limit.Y || p.Y <= p.Z  && p.Y < limit.Y {
-		p.Y += 1
-	} else if p.Z <= p.X && p.Z < limit.Z || p.Z <= p.Y && p.Z < limit.Z {
-		p.Z += 1
-	} else {
-		return p, done
-	} // limit reached
+		Finds the nearest point with the space of [0, 1] for any of the points as needed.
 	*/
+	availP := p
 
-	if p.X < limit.X {
-		// if p.X <= p.Y && p.X <= p.Z {
-			p.X += 1
-		// }
-	} else if p.Y < limit.Y {
-		// if p.Y <= p.X && p.Y <= p.Z {
-			p.Y += 1
-		// }
-	} else if p.Z < limit.Z {
-		// if p.Z <= p.X && p.Z <= p.Y {
-			p.Z += 1
-		// }
+	if availP.X < availP.Y || availP.X < availP.Z {
+		availP.X++
+	} else if availP.Y < availP.X || availP.Y < availP.Z {
+		availP.Y++
 	} else {
-		fmt.Printf("\n\tLimit reachead!")
-		return p, done
-	} // limit reached
-
-	fmt.Printf("node point in NextAvailableSpacePoint func, post-op: %d %d %d\n\n", p.X, p.Y, p.Z)
-
-	pointNotFree, _ := p.IndexIn(space)
-	fmt.Printf("New point not free: %t\n", pointNotFree)
-	if !pointNotFree { // ?? Remove ! because its only meant to see the algorithm in recursive action
-		// Point is not free
-		NextAvailableSpacePoint(space, p, limit)
+		availP.Z++
 	}
 
-	return p, !done // Not exactly useful, func just needs to return. Actual return statement at the top
+	
+
+	for there := slices.Contains(space, availP) /* ?? May not work */ ; there == true ; {
+		// run to find next available point as long no free point i.e., !there, is found
+		NextAvailableSpacePoint(space, availP)
+	}
+
+	return availP // Not exactly useful, func just needs to return. Actual return statement at the top
 }
