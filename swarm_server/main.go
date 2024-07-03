@@ -9,36 +9,29 @@ import (
 
 func main() {
 	/*
-		// fmt.Println("\nWelcome to the CLI version of Swarm Simulation")
-		var sp space.Plane
-		sp_o := sp.Origin // (0, 0, 0) by default
-		sp.End.X, sp.End.Y, sp.End.Z = 1, 1, 100
+	fmt.Println("\nWelcome to the CLI version of Swarm Simulation")
 
-		var n node.Node
+	var (
+		sp = space.Plane{End: space.Point{X: 1, Y: 3, Z: 3}}
+		
+		occupiedSpace []space.Point
 
-		// fmt.Printf("Node in main, before: %d, %d, %d\n", n.P.X, n.P.Y, n.P.Z)
+		n1 node.Node
+		// n2 node.Node
+		// n3 node.Node
+	)
 
-		n.P = sp_o
-
-		// fmt.Printf("Node in main, after: %d, %d, %d\n", n.P.X, n.P.Y, n.P.Z)
-
-		occupiedSpace := []space.Point{sp_o}
-		var done bool
-
-		fmt.Printf("Current point is (%d, %d, %d)\n", n.P.X, n.P.Y, n.P.Z)
-
-		if occupiedSpace, done = n.MoveTo(occupiedSpace, sp.End); done {
-			fmt.Printf("Node in main, now at: %d, %d, %d\n", n.P.X, n.P.Y, n.P.Z)
-			return
-		}
-	*/
+	go n1.MoveTo(occupiedSpace, sp.End)
+	// go n2.MoveTo(occupiedSpace, sp.End)
+	// go n3.MoveTo(occupiedSpace, sp.End)
+*/
 
 	tester()
 }
 
 func tester() {
 	var n node.Node
-	limit := space.Point{X: 1, Y: 1, Z: 20}
+	limit := space.Point{X: 1, Z: 1, Y: 20}
 	n.MoveTo([]space.Point{}, limit)
 	fmt.Printf("n initial values; X: %d, Y: %d, Z: %d", n.P.X, n.P.Y, n.P.Z)
 
