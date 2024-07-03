@@ -1,2 +1,0 @@
-TODO: Make sure Node keeps checking for free spot before moving there;
-it must check the nearest space point.
