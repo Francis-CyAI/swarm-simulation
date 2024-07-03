@@ -8,31 +8,41 @@ import (
 )
 
 func main() {
-	/*
-	fmt.Println("\nWelcome to the CLI version of Swarm Simulation")
+		fmt.Println("\nWelcome to the CLI version of Swarm Simulation")
 
-	var (
-		sp = space.Plane{End: space.Point{X: 1, Y: 3, Z: 3}}
-		
-		occupiedSpace []space.Point
+		var (
+			sp = space.Plane{End: space.Point{X: 1, Y: 30, Z: 3}}
+			occupiedSpace []space.Point
+		)
 
-		n1 node.Node
-		// n2 node.Node
-		// n3 node.Node
-	)
+		numOfNodes := 3
 
-	go n1.MoveTo(occupiedSpace, sp.End)
-	// go n2.MoveTo(occupiedSpace, sp.End)
-	// go n3.MoveTo(occupiedSpace, sp.End)
-*/
+		ch := make(chan struct{}, numOfNodes) // Needed to make main go routine wait for subroutines
 
-	tester()
+		for range(numOfNodes) {
+			go func() {
+				var n node.Node
+				n.MoveTo(occupiedSpace, sp.End)
+				ch<-struct{}{}
+			}()
+		}
+
+		for range(numOfNodes) {
+			<-ch
+		}
+
+	// tester()
 }
 
 func tester() {
+	ch := make(chan struct{})
 	var n node.Node
 	limit := space.Point{X: 1, Z: 1, Y: 20}
-	n.MoveTo([]space.Point{}, limit)
+	go func() {
+		n.MoveTo([]space.Point{}, limit)
+		ch <- struct{}{}
+	}()
 	fmt.Printf("n initial values; X: %d, Y: %d, Z: %d", n.P.X, n.P.Y, n.P.Z)
+	<-ch
 
 }
