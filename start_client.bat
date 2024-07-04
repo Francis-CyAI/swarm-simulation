@@ -1,1 +1,1 @@
-cd && go run server.go
+cd swarm_client && go run client.go
