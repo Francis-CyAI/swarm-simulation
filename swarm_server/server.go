@@ -13,7 +13,7 @@ func main() {
 	fmt.Println("\nSwarm server running...")
 
 	var (
-		sp            = space.Plane{End: space.Point{X: 1, Y: 500000, Z: 3}}
+		sp            = space.Plane{End: space.Point{X: 1, Y: 150000, Z: 3}}
 		occupiedSpace []space.Point
 	)
 
