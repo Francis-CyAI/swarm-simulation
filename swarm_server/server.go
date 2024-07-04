@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	fmt.Println("\nSwarm server running...\n")
+	fmt.Println("\nSwarm server running...")
 
 	var (
 		sp            = space.Plane{End: space.Point{X: 1, Y: 1000, Z: 3}}
