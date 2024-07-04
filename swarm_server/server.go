@@ -13,7 +13,7 @@ func main() {
 	fmt.Println("\nSwarm server running...")
 
 	var (
-		sp            = space.Plane{End: space.Point{X: 1, Y: 1000, Z: 3}}
+		sp            = space.Plane{End: space.Point{X: 1, Y: 10000, Z: 3}}
 		occupiedSpace []space.Point
 	)
 
@@ -45,7 +45,7 @@ func main() {
 			defer wg.Done()
 			var n node.Node
 			point, done := n.MoveTo(conn, occupiedSpace, sp.End)
-			fmt.Fprintf(conn, "Node # %d: done: %t, at: (%d, %d, %d)\n", num, done, point.X, point.Y, point.Z)
+			fmt.Printf("Node # %d: done: %t, at: (%d, %d, %d)\n", num, done, point.X, point.Y, point.Z)
 		}()
 	}
 	wg.Wait()
