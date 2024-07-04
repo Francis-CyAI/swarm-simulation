@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	fmt.Println("\nWelcome to the CLI version of Swarm Simulation")
+	fmt.Println("\nSwarm server running...\n")
 
 	var (
 		sp            = space.Plane{End: space.Point{X: 1, Y: 1000, Z: 3}}
