@@ -1,6 +1,6 @@
 package space
 
-type Point struct { X, Y, Z int16 }
+type Point struct { X, Y, Z int }
 
 func (point Point) IndexIn(space []Point) (bool, int) {
 	there := false

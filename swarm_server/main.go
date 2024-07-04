@@ -2,31 +2,52 @@ package main
 
 import (
 	"fmt"
+	"log"
+	"net"
 	"swarm_server/node"
 	"swarm_server/space"
 	"sync"
 )
 
 func main() {
-		fmt.Println("\nWelcome to the CLI version of Swarm Simulation")
+	fmt.Println("\nWelcome to the CLI version of Swarm Simulation")
 
-		var (
-			sp = space.Plane{End: space.Point{X: 1, Y: 1000, Z: 3}}
-			occupiedSpace []space.Point
-		)
+	var (
+		sp            = space.Plane{End: space.Point{X: 1, Y: 1000, Z: 3}}
+		occupiedSpace []space.Point
+	)
 
-		numOfNodes := 3
-		
-		var wg sync.WaitGroup
+	listener, err := net.Listen("tcp", "localhost:8000")
+	if err != nil {
+		log.Fatal(err)
+	}
 
-		for range(numOfNodes) {
-			wg.Add(1)
-			go func() {
-				defer wg.Done()
-				var n node.Node
-				n.MoveTo(occupiedSpace, sp.End)
-			}()
+	var wg sync.WaitGroup
+
+	for {
+		conn, err := listener.Accept()
+		// conn closed in MoveTo method
+		if err != nil {
+			log.Print(err)
+			break
 		}
 
-		wg.Wait()
+		wg.Add(1)
+		var (
+			mu    sync.Mutex
+			count int
+		)
+		go func() {
+			mu.Lock()
+			count++
+			num := count
+			mu.Unlock()
+			defer wg.Done()
+			var n node.Node
+			point, done := n.MoveTo(conn, occupiedSpace, sp.End)
+			fmt.Fprintf(conn, "Node # %d: done: %t, at: (%d, %d, %d)\n", num, done, point.X, point.Y, point.Z)
+		}()
+	}
+	wg.Wait()
+	fmt.Println("\nShutdown.")
 }

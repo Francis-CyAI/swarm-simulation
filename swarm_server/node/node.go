@@ -2,6 +2,7 @@ package node
 
 import (
 	"fmt" // TODO: remove
+	"net"
 	"slices"
 	"swarm_server/space"
 	"sync"
@@ -62,7 +63,7 @@ func nextPoint(currPoint space.Point, limit space.Point) (space.Point, bool) {
 	return currPoint, done
 }
 
-func (node *Node) MoveTo(space []space.Point, limit space.Point) ([]space.Point, bool) { // TODO: fix logic
+func (node *Node) MoveTo(c net.Conn, space []space.Point, limit space.Point) (space.Point, bool) { // TODO: fix logic
 	// Okay: working perfectly
 
 	/**
@@ -88,15 +89,20 @@ func (node *Node) MoveTo(space []space.Point, limit space.Point) ([]space.Point,
 		mu.Lock()
 		node.P, done = nextPoint(node.P, limit)
 		mu.Unlock()
-		fmt.Printf("nextPoint:- X: %d, Y: %d, Z: %d; done: %t\n", node.P.X, node.P.Y, node.P.Z, done)
+
+		// Report progress
+		fmt.Fprintf(c, "nextPoint:- X: %d, Y: %d, Z: %d; done: %t\n", node.P.X, node.P.Y, node.P.Z, done)
 
 		there, _ := node.IndexIn(space)
 
 		if there /* collision has occured */ {
+			fmt.Fprintln(c, "Point already occupied")
 			notFound := true
 			for {
 				node.P, notFound = NextAvailableSpacePoint(space, node.P, limit)
 				if !notFound {
+					fmt.Fprintf(c, "Free space point found:- X: %d, Y: %d, Z: %d; done: %t\n", node.P.X, node.P.Y, node.P.Z, done)
+
 					break
 				} // A free space point has been found
 				//TODO: if space vicinity exhausted, move to 'nextPoint'
@@ -109,7 +115,8 @@ func (node *Node) MoveTo(space []space.Point, limit space.Point) ([]space.Point,
 			break
 		}
 	}
-	return space, done
+	c.Close()
+	return node.P, done
 }
 
 func NextAvailableSpacePoint(space []space.Point, p space.Point, limit space.Point) (space.Point, bool) {
