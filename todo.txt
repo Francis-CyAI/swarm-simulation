@@ -1,1 +1,1 @@
-TODO: Make http tcp server instace and clients to act as drones
+TODO: Allow for CLI configuration of network ports, node destinations and universal speed. 
