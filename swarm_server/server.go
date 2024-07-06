@@ -119,7 +119,7 @@ func estNetLisener(reader *bufio.Reader, ip string, port string) net.Listener {
 
 	netAddr := builder.String()
 
-	fmt.Printf("Listening at: %s\n", netAddr)
+	fmt.Printf("\nListening at: %s\n", netAddr)
 
 	listener, err := net.Listen("tcp", netAddr)
 	if err != nil {
