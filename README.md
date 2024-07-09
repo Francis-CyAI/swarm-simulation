@@ -78,7 +78,7 @@ Contributions are welcome! Please fork the repository and submit a pull request 
 
 ## License
 
-This project is licensed under the GPLv3 License.
+This project is licensed under the GPLv3 License. See the [License](LICENSE) for details.
 
 ## Contact
 
